@@ -9,21 +9,44 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+model Profile {
+  id     String  @id @default(uuid())
+  nameP String @db.VarChar(20)
+  dateOfBirth String @db.VarChar(20)
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+  teacherId String  @unique  
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId String  @unique  
+}
 
-model User {
+
+
+model Teacher {
   id String @id @default(uuid()) 
-  username String @db.VarChar(20) @unique
-  email String @unique
-  password String
-  role Role 
+  name String @db.VarChar(20) 
+  profile Profile?
+  classrooms Classroom[]
+
+}
+
+model Student {
+  id String @id @default(uuid()) 
+  name String @db.VarChar(20) 
   age Int
-  joining_year Int @db.Year()
-
+  major String @db.VarChar(30)
+  profile Profile?
+  classrooms Classroom[]
 
 }
 
- enum Role {
-  USER
-  ADMIN
+model Classroom {
+  id String @id @default(uuid()) 
+  name String @db.VarChar(20) 
+  students Student[]
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+  teacherId String   
 }
+
+
+ 
  
